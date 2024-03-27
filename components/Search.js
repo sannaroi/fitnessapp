@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, FlatList, ActivityIndicator, StyleSheet } from 'react-native';
+import { View, Text, FlatList, ActivityIndicator, StyleSheet, Image } from 'react-native';
+import { Button, Input } from '@rneui/themed';
 
 export default function Search() {
   const [muscleGroup, setMuscleGroup] = useState('');
@@ -8,7 +9,7 @@ export default function Search() {
 
   const fetchExercises = () => {
     setLoading(true);
-    fetch(`https://exercisedb.p.rapidapi.com/exercises/target/${muscleGroup}?limit=10`, {
+    fetch(`https://exercisedb.p.rapidapi.com/exercises/target/${muscleGroup}?limit=25`, {
       method: 'GET',
       headers: {
         'X-RapidAPI-Key': '9c323f6266msh5f287ec95332aefp16dbdbjsnae0fbebd4361',
@@ -16,6 +17,7 @@ export default function Search() {
       },
     })
       .then(response => {
+        console.log(response)
         if (!response.ok) {
           throw new Error('Network response was not ok' + response.statusText);
         }
@@ -33,27 +35,34 @@ export default function Search() {
 
   return (
     <View style={styles.container}>
-      <TextInput
-        style={styles.input}
+      <Input
         placeholder="Enter muscle group..."
         onChangeText={text => setMuscleGroup(text)}
         value={muscleGroup}
       />
-      <Button title="Search" onPress={fetchExercises} />
+      <Text>Ex. abs, biceps, lats, quads etc.</Text>
+      <Button onPress={fetchExercises} radius="lg">
+        
+        Search
+      </Button>
       {loading ? (
         <ActivityIndicator style={styles.loader} size="large" color="#0000ff" />
       ) : (
-        <FlatList
-          style={{ marginTop: 10 }}
-          data={exerciseList}
-          renderItem={({ item }) => (
-            <View style={styles.exerciseItem}>
-              <Text style={styles.exerciseName}>{item.name}</Text>
-              <Text>{item.description}</Text>
-            </View>
-          )}
-          keyExtractor={item => item.id.toString()}
+      <FlatList
+        style={{ marginTop: 10 }}
+        data={exerciseList}
+        renderItem={({ item }) => (
+      <View style={styles.exerciseItem}>
+        <Text style={styles.exerciseName}>{item.name}</Text>
+        <Text>{item.description}</Text>
+        <Image
+          source={{ uri: item.gifUrl }}
+          style={{ width: 200, height: 200 }} 
         />
+      </View>
+  )}
+  keyExtractor={item => item.id.toString()}
+/>
       )}
     </View>
   );

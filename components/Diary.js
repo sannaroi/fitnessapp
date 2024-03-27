@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
+import { Button, Input, ListIem } from '@rneui/themed';
 import { Ionicons } from '@expo/vector-icons';
+import { ListItem } from '@rneui/base';
 
 export default function Diary() {
   const [exercise, setExercise] = useState('');
@@ -17,7 +19,7 @@ export default function Diary() {
       date: date,
       duration: duration
     };
-    setDiaryEntries([newExercise, ...diaryEntries]); // Lisätään uusi harjoitus ensimmäiseksi taulukkoon
+    setDiaryEntries([newExercise, ...diaryEntries]); 
     setExercise('');
     setDescription('');
     setDate('');
@@ -39,41 +41,41 @@ export default function Diary() {
 
   return (
     <View style={styles.container}>
-      <Text>Add Exercise:</Text>
-      <TextInput
-        style={styles.input}
+      <Input
         value={exercise}
         onChangeText={setExercise}
         placeholder="Exercise"
       />
-      <TextInput
-        style={styles.input}
+      <Input
         value={description}
         onChangeText={setDescription}
         placeholder="Description"
       />
-      <TextInput
-        style={styles.input}
+      <Input
         value={date}
         onChangeText={setDate}
         placeholder="Date"
       />
-      <TextInput
-        style={styles.input}
+      <Input
         value={duration}
         onChangeText={setDuration}
         placeholder="Duration"
       />
-      <Button title="Save" onPress={addExercise} />
+      <Button onPress={addExercise} radius="lg">
+        Save
+      </Button>
       <FlatList
         data={diaryEntries.sort((a, b) => new Date(b.date) - new Date(a.date))} 
         renderItem={({ item }) => (
           <View style={styles.entry}>
-            <Text>Exercise: {item.exercise}</Text>
-            <Text>Description: {item.description}</Text>
-            <Text>Date: {item.date}</Text>
-            <Text>Duration: {item.duration}</Text>
-            <View style={styles.icons}>
+            
+              <ListItem.Content>
+                <ListItem.Title>{item.exercise}</ListItem.Title>
+                <ListItem.Subtitle>{item.description}</ListItem.Subtitle>
+                <ListItem.Subtitle>{item.date}</ListItem.Subtitle>
+                <ListItem.Subtitle>{item.duration}</ListItem.Subtitle>
+              </ListItem.Content>
+              <View style={styles.icons}>
               <TouchableOpacity onPress={() => editExercise(item.id)}>
                 <Ionicons name="create" size={24} color="blue" style={{ marginRight: 10 }} />
               </TouchableOpacity>
@@ -96,7 +98,6 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 40,
-    borderColor: 'gray',
     borderWidth: 1,
     marginBottom: 10,
     paddingHorizontal: 10,
