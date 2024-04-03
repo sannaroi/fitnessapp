@@ -41,8 +41,7 @@ export default function Search() {
         value={muscleGroup}
       />
       <Text>Ex. abs, biceps, lats, quads etc.</Text>
-      <Button onPress={fetchExercises} radius="lg">
-        
+      <Button onPress={fetchExercises} radius="lg" style={styles.searchButton}>
         Search
       </Button>
       {loading ? (
@@ -78,7 +77,7 @@ const styles = StyleSheet.create({
   input: {
     height: 40,
     width: '80%',
-    borderColor: 'gray',
+    
     borderWidth: 1,
     marginBottom: 10,
     paddingHorizontal: 10,
@@ -93,4 +92,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
+  searchButton: {
+    backgroundColor: 'rgba(219, 207, 226, 0.5)',
+  }
 });
