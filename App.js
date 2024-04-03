@@ -7,7 +7,7 @@ import { Ionicons} from '@expo/vector-icons';
 import HomeScreen from './components/Home';
 import SearchScreen from './components/Search';
 import DiaryScreen from './components/Diary';
-import StaticsScreen from './components/Statics';
+import Statics from './components/Statics';
 
 const screenOptions = ({ route }) => ({
   tabBarIcon: ({ focused, color, size }) => {
@@ -35,7 +35,7 @@ export default function App() {
       <Tab.Navigator screenOptions={screenOptions}>
         <Tab.Screen name="Home" component={HomeScreen} />
         <Tab.Screen name="Diary" component={DiaryScreen} />
-        <Tab.Screen name="Statics" component={StaticsScreen} />
+        <Tab.Screen name="Statics" component={Statics} />
         <Tab.Screen name="Search" component={SearchScreen} />
       </Tab.Navigator>
     </NavigationContainer>
