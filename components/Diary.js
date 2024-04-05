@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
-import { Button, Input, ListIem } from '@rneui/themed';
+import { Input } from '@rneui/themed';
 import { Ionicons } from '@expo/vector-icons';
 import { ListItem } from '@rneui/base';
+import { Button } from 'react-native-paper';
 
 export default function Diary() {
   const [exercise, setExercise] = useState('');
@@ -61,7 +62,7 @@ export default function Diary() {
         onChangeText={setDuration}
         placeholder="Duration"
       />
-      <Button onPress={addExercise} radius="lg">
+      <Button onPress={addExercise} radius="lg" style={styles.saveButton}>
         Save
       </Button>
       <FlatList
@@ -118,4 +119,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     marginTop: 5,
   },
+  saveButton: {
+    backgroundColor: '#c7ecee',
+  }
 });

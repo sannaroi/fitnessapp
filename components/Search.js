@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, FlatList, ActivityIndicator, StyleSheet, Image } from 'react-native';
-import { Button, Input } from '@rneui/themed';
+import { Input } from '@rneui/themed';
+import { Button } from 'react-native-paper';
 
 export default function Search() {
   const [muscleGroup, setMuscleGroup] = useState('');
@@ -41,7 +42,7 @@ export default function Search() {
         value={muscleGroup}
       />
       <Text>Ex. abs, biceps, lats, quads etc.</Text>
-      <Button onPress={fetchExercises} radius="lg" style={styles.searchButton}>
+      <Button onPress={fetchExercises} radius="s" style={styles.searchButton}>
         Search
       </Button>
       {loading ? (
@@ -93,6 +94,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   searchButton: {
-    backgroundColor: 'rgba(219, 207, 226, 0.5)',
+    backgroundColor: '#c7ecee',
   }
 });
