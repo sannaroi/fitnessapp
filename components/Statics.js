@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, ImageBackground } from 'react-native';
 import { Pedometer } from 'expo-sensors';
+import Svg, { Circle, Rect } from 'react-native-svg';
+import { BarChart } from 'react-native-chart-kit';
 
-export default function App() {
+export default function Statics() {
   const [isPedometerAvailable, setIsPedometerAvailable] = useState('checking');
   const [monthlyStepCount, setMonthlyStepCount] = useState(0);
   const [weeklyStepCount, setWeeklyStepCount] = useState(0);
   const [dailyStepCount, setDailyStepCount] = useState(0);
+  const [dailyStepData, setDailyStepData] = useState([]);
 
   const subscribe = async () => {
     const isAvailable = await Pedometer.isAvailableAsync();
@@ -30,11 +33,19 @@ export default function App() {
       }
 
       const dailyStart = new Date();
-      dailyStart.setDate(dailyStart.getDate() - 1);
-      const dailyStepCountResult = await Pedometer.getStepCountAsync(dailyStart, end);
-      if (dailyStepCountResult) {
-        setDailyStepCount(dailyStepCountResult.steps);
+      dailyStart.setDate(dailyStart.getDate() - 6); 
+      const dailyStepCounts = [];
+      const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+      for (i = 0; i < 7; i++) {
+        const currentDay = new Date(dailyStart);
+        currentDay.setDate(currentDay.getDate() + i);
+        const dailyStepCountResult = await Pedometer.getStepCountAsync(currentDay, currentDay);
+        if (dailyStepCountResult) {
+          dailyStepCounts.push({ day: weekdays[currentDay.getDay()], steps: dailyStepCountResult.steps });
+        }
       }
+      console.log(dailyStepCounts);
+      setDailyStepData(dailyStepCounts);
 
       return Pedometer.watchStepCount(result => {
         setDailyStepCount(result.steps);
@@ -44,28 +55,49 @@ export default function App() {
 
   useEffect(() => {
     const subscription = subscribe();
+    console.log(dailyStepData);
     return () => subscription;
   }, []);
 
   return (
     <ImageBackground source={require('./juoksu.jpg')} style={styles.backgroundImage}>
-  <View style={styles.container}>
-    {/* 
-    <View style={styles.box}>
-      <Text>Pedometer.isAvailableAsync(): {isPedometerAvailable}</Text>
-    </View>
-    */}
-    <View style={styles.box}>
-      <Text>Monthly steps: {monthlyStepCount}</Text>
-    </View>
-    <View style={styles.box}>
-      <Text>Weekly steps: {weeklyStepCount}</Text>
-    </View>
-    <View style={styles.box}>
-      <Text>Daily steps: {dailyStepCount}</Text>
-    </View>
-  </View>
-</ImageBackground>
+      <View style={styles.container}>
+        <View style={styles.box}>
+          <Text>Monthly steps: {monthlyStepCount}</Text>
+        </View>
+        <View style={styles.box}>
+          <Text>Weekly steps: {weeklyStepCount}</Text>
+        </View>
+        <View style={styles.box}>
+          <Text>Daily steps: {dailyStepCount}</Text>
+        </View>
+        <View style={styles.chartContainer}>
+          <BarChart
+            data={{
+              labels: dailyStepData.map(data => data.day),
+              datasets: [{ data: dailyStepData.map(data => data.steps) }]
+            }}
+            width={350}
+            height={300}
+            yAxisSuffix=""
+            yAxisInterval=""
+            chartConfig={{
+              backgroundColor: '#ffffff',
+              backgroundGradientFrom: '#ffffff',
+              backgroundGradientTo: '#ffffff',
+              barPercentage: 0.6,
+              color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+              
+            }}
+            style={{ borderColor: 'black', borderWidth:1}}
+            withInnerLines= {false}
+            verticalLabelRotation={50}
+            showValuesOnTopOfBars
+            
+          />
+        </View>
+      </View>
+    </ImageBackground>
   );
 }
 
@@ -86,7 +118,14 @@ const styles = StyleSheet.create({
   },
   backgroundImage: {
     flex: 1,
-    resizeMode: 'cover', // tai 'stretch' tai 'contain'
+    resizeMode: 'cover', 
   },
-  
+  chartContainer: {
+    marginTop: 20,
+    alignItems: 'center',
+  },
+  chart: {
+    marginVertical: 8,
+    borderRadius: 16,
+  },
 });

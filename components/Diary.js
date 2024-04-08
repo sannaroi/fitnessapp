@@ -13,11 +13,12 @@ export default function Diary() {
   const [diaryEntries, setDiaryEntries] = useState([]);
 
   const addExercise = () => {
+    const currentDate = new Date().toISOString().slice(0, 10); // Nykyinen päivämäärä muodossa YYYY-MM-DD
     const newExercise = {
       id: Math.random().toString(),
       exercise: exercise,
       description: description,
-      date: date,
+      date: currentDate,
       duration: duration
     };
     setDiaryEntries([newExercise, ...diaryEntries]); 
@@ -52,11 +53,7 @@ export default function Diary() {
         onChangeText={setDescription}
         placeholder="Description"
       />
-      <Input
-        value={date}
-        onChangeText={setDate}
-        placeholder="Date"
-      />
+     
       <Input
         value={duration}
         onChangeText={setDuration}
@@ -66,28 +63,27 @@ export default function Diary() {
         Save
       </Button>
       <FlatList
-        data={diaryEntries.sort((a, b) => new Date(b.date) - new Date(a.date))} 
-        renderItem={({ item }) => (
-          <View style={styles.entry}>
-            
-              <ListItem.Content>
-                <ListItem.Title>{item.exercise}</ListItem.Title>
-                <ListItem.Subtitle>{item.description}</ListItem.Subtitle>
-                <ListItem.Subtitle>{item.date}</ListItem.Subtitle>
-                <ListItem.Subtitle>{item.duration}</ListItem.Subtitle>
-              </ListItem.Content>
-              <View style={styles.icons}>
-              <TouchableOpacity onPress={() => editExercise(item.id)}>
-                <Ionicons name="create" size={24} color="blue" style={{ marginRight: 10 }} />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => deleteExercise(item.id)}>
-                <Ionicons name="trash" size={24} color="red" />
-              </TouchableOpacity>
-            </View>
-          </View>
-        )}
-        keyExtractor={(item, index) => index.toString()}
-      />
+  data={diaryEntries.sort((a, b) => new Date(b.date) - new Date(a.date))} 
+  renderItem={({ item }) => (
+    <View style={styles.entry}>
+      <ListItem.Content>
+        <ListItem.Title>{item.exercise} {new Date(item.date).toLocaleDateString('en-US', { month: 'short', day: '2-digit' })}, {new Date(item.date).getFullYear()}
+        <TouchableOpacity onPress={() => editExercise(item.id)}>
+          <Ionicons name="create" size={24} color="blue" style={{ marginRight: 10 }} />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => deleteExercise(item.id)}>
+          <Ionicons name="trash" size={24} color="red" />
+        </TouchableOpacity>
+        </ListItem.Title>
+        <ListItem.Subtitle>{item.description}</ListItem.Subtitle>
+        <ListItem.Subtitle>{item.duration}</ListItem.Subtitle>
+      </ListItem.Content>
+      <View style={styles.icons}>
+      </View>
+    </View>
+  )}
+  keyExtractor={(item, index) => index.toString()}
+/>
     </View>
   );
 }
