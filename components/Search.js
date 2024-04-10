@@ -29,7 +29,7 @@ export default function Search() {
         setLoading(false);
       })
       .catch(error => {
-        console.error('Error fetching exercises:', error);
+        console.error('Error ', error);
         setLoading(false);
       });
   };

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, ImageBackground } from 'react-native';
 import { Pedometer } from 'expo-sensors';
-import Svg, { Circle, Rect } from 'react-native-svg';
 import { BarChart } from 'react-native-chart-kit';
 
 export default function Statics() {
@@ -32,20 +31,23 @@ export default function Statics() {
         setWeeklyStepCount(weeklyStepCountResult.steps);
       }
 
-      const dailyStart = new Date();
-      dailyStart.setDate(dailyStart.getDate() - 6); 
-      const dailyStepCounts = [];
-      const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-      for (i = 0; i < 7; i++) {
-        const currentDay = new Date(dailyStart);
-        currentDay.setDate(currentDay.getDate() + i);
-        const dailyStepCountResult = await Pedometer.getStepCountAsync(currentDay, currentDay);
-        if (dailyStepCountResult) {
-          dailyStepCounts.push({ day: weekdays[currentDay.getDay()], steps: dailyStepCountResult.steps });
-        }
-      }
-      console.log(dailyStepCounts);
-      setDailyStepData(dailyStepCounts);
+      const weekdays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+      const today = new Date();
+      const todayIndex = weekdays.indexOf(today.toLocaleDateString('en-US', { weekday: 'short' }));
+
+      const dailyStepCounts = weekdays.map(async (day, index) => {
+        const start = new Date();
+        start.setDate(start.getDate() - (todayIndex - index));
+        const end = new Date(start);
+        end.setDate(end.getDate() + 1);
+
+        const dailyStepCountResult = await Pedometer.getStepCountAsync(start, end);
+        return { day, steps: dailyStepCountResult.steps };
+      });
+
+
+      const resolvedCounts = await Promise.all(dailyStepCounts);
+      setDailyStepData(resolvedCounts);
 
       return Pedometer.watchStepCount(result => {
         setDailyStepCount(result.steps);
@@ -55,7 +57,6 @@ export default function Statics() {
 
   useEffect(() => {
     const subscription = subscribe();
-    console.log(dailyStepData);
     return () => subscription;
   }, []);
 
@@ -75,25 +76,25 @@ export default function Statics() {
           <BarChart
             data={{
               labels: dailyStepData.map(data => data.day),
-              datasets: [{ data: dailyStepData.map(data => data.steps) }]
+              datasets: [{ data: dailyStepData.map(data => Math.floor(data.steps)) }]
             }}
             width={350}
             height={300}
             yAxisSuffix=""
-            yAxisInterval=""
+            yAxisInterval={5000}
+            yAxisBounds={[0, 10000]}
             chartConfig={{
               backgroundColor: '#ffffff',
               backgroundGradientFrom: '#ffffff',
               backgroundGradientTo: '#ffffff',
               barPercentage: 0.6,
+              decimalPlaces: 0,
               color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-              
             }}
-            style={{ borderColor: 'black', borderWidth:1}}
-            withInnerLines= {false}
+            style={{ borderColor: 'black', borderWidth: 1 }}
+            withInnerLines={true}
             verticalLabelRotation={50}
             showValuesOnTopOfBars
-            
           />
         </View>
       </View>
@@ -118,14 +119,10 @@ const styles = StyleSheet.create({
   },
   backgroundImage: {
     flex: 1,
-    resizeMode: 'cover', 
+    resizeMode: 'cover',
   },
   chartContainer: {
     marginTop: 20,
     alignItems: 'center',
-  },
-  chart: {
-    marginVertical: 8,
-    borderRadius: 16,
   },
 });
