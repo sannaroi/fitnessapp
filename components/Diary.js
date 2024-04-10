@@ -13,7 +13,7 @@ export default function Diary() {
   const [diaryEntries, setDiaryEntries] = useState([]);
 
   const addExercise = () => {
-    const currentDate = new Date().toISOString().slice(0, 10); // Nykyinen päivämäärä muodossa YYYY-MM-DD
+    const currentDate = new Date().toISOString().slice(0, 10); 
     const newExercise = {
       id: Math.random().toString(),
       exercise: exercise,
@@ -69,10 +69,10 @@ export default function Diary() {
       <ListItem.Content>
         <ListItem.Title>{item.exercise} {new Date(item.date).toLocaleDateString('en-US', { month: 'short', day: '2-digit' })}, {new Date(item.date).getFullYear()}
         <TouchableOpacity onPress={() => editExercise(item.id)}>
-          <Ionicons name="create" size={24} color="blue" style={{ marginRight: 10 }} />
+          <Ionicons name="create" size={24} color="#00ACC1" style={{ marginLeft: 110 }} />
         </TouchableOpacity>
         <TouchableOpacity onPress={() => deleteExercise(item.id)}>
-          <Ionicons name="trash" size={24} color="red" />
+          <Ionicons name="trash" size={24} color="#EC407A" />
         </TouchableOpacity>
         </ListItem.Title>
         <ListItem.Subtitle>{item.description}</ListItem.Subtitle>
@@ -82,7 +82,8 @@ export default function Diary() {
       </View>
     </View>
   )}
-  keyExtractor={(item, index) => index.toString()}
+  keyExtractor={(item) => item.id}
+  extraData={diaryEntries}
 />
     </View>
   );

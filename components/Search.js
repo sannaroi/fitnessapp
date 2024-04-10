@@ -48,21 +48,21 @@ export default function Search() {
       {loading ? (
         <ActivityIndicator style={styles.loader} size="large" color="#0000ff" />
       ) : (
-      <FlatList
-        style={{ marginTop: 10 }}
-        data={exerciseList}
-        renderItem={({ item }) => (
-      <View style={styles.exerciseItem}>
-        <Text style={styles.exerciseName}>{item.name}</Text>
-        <Text>{item.description}</Text>
-        <Image
-          source={{ uri: item.gifUrl }}
-          style={{ width: 200, height: 200 }} 
+        <FlatList
+          style={{ marginTop: 10 }}
+          data={exerciseList}
+          renderItem={({ item }) => (
+            <View style={styles.exerciseItem}>
+              <Text style={styles.exerciseName}>{item.name}</Text>
+              <Text>{item.description}</Text>
+              <Image
+                source={{ uri: item.gifUrl }}
+                style={{ width: 200, height: 200 }}
+              />
+            </View>
+          )}
+          keyExtractor={item => item.id.toString()}
         />
-      </View>
-  )}
-  keyExtractor={item => item.id.toString()}
-/>
       )}
     </View>
   );
@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
   input: {
     height: 40,
     width: '80%',
-    
+
     borderWidth: 1,
     marginBottom: 10,
     paddingHorizontal: 10,

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Ionicons} from '@expo/vector-icons';  
+import { Ionicons } from '@expo/vector-icons';
 
 import HomeScreen from './components/Home';
 import SearchScreen from './components/Search';
